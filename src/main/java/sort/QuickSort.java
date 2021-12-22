@@ -1,11 +1,9 @@
 package sort;
 
-import java.util.ArrayList;
-
 /**
  * @author vaxtomis
  */
-public class quickSort {
+public class QuickSort {
     public void sort(int[] array) {
         __quickSort(array, 0, array.length - 1);
     }
