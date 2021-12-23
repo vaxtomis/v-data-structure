@@ -15,7 +15,7 @@ package tree;
  */
 public class BPlusTree<V extends Comparable<V>, T> {
     // 阶数
-    private Integer order;
+    private Integer degree;
 
     // 用于初始化数组长度（在节点拥有 order 个元素后插入，在拆分前要留出容纳插入元素的空间）
     // 所以为 order + 1
@@ -28,9 +28,9 @@ public class BPlusTree<V extends Comparable<V>, T> {
         this(3);
     }
 
-    public BPlusTree(Integer order) {
-        this.order = order;
-        this.maxNumber = order + 1;
+    public BPlusTree(Integer degree) {
+        this.degree = degree;
+        this.maxNumber = degree + 1;
         this.start = new LeafNode<>();
         this.root = start;
     }
@@ -186,7 +186,7 @@ public class BPlusTree<V extends Comparable<V>, T> {
             values[index] = value;
             keyNumber++;
             // 没有溢出，无需拆分,但是最大值变化
-            if (keyNumber <= order) {
+            if (keyNumber <= degree) {
                 if (index == keyNumber - 1) {
                     Node node = this;
                     while (node.parent != null) {
@@ -276,7 +276,7 @@ public class BPlusTree<V extends Comparable<V>, T> {
             childs[keyIndex] = node1;
             childs[keyIndex + 1] = node2;
             this.keyNumber++;
-            if (this.keyNumber <= order) {
+            if (this.keyNumber <= degree) {
                 return null;
             }
             // 超出了阶数，对节点进行拆分
