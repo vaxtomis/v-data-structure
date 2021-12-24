@@ -1,19 +1,28 @@
 package sort;
 
+import java.util.Arrays;
+
 /**
  * @author vaxtomis
  */
-public class QuickSort {
-    public void sort(int[] array) {
+public class QuickSort implements Sort {
+
+    @Override
+    public void sort(Comparable[] array) {
+        long startTime = System.currentTimeMillis();
         __quickSort(array, 0, array.length - 1);
+        long endTime = System.currentTimeMillis();
+        System.out.println(Arrays.toString(array));
+        System.out.println("快排用时： " + (startTime - endTime) + " ms");
+
     }
 
-    private void __quickSort(int[] array, int l, int r) {
+    private void __quickSort(Comparable[] array, int l, int r) {
         int i = l, j = r;
         if (i >= j) return;
         while (i < j) {
-            while (i < j && array[j] >= array[l]) j--;
-            while (i < j && array[i] <= array[r]) i++;
+            while (i < j && array[j].compareTo(array[l]) >= 0) j--;
+            while (i < j && array[i].compareTo(array[r]) <= 0) i++;
             swap(array, i, j);
         }
         swap(array, l, i);
@@ -21,9 +30,10 @@ public class QuickSort {
         __quickSort(array, i+1, r);
     }
 
-    private void swap(int[] array, int i, int j) {
-        int temp = array[i];
+    private void swap(Comparable[] array, int i, int j) {
+        Comparable temp = array[i];
         array[i] = array[j];
         array[j] = temp;
     }
+
 }
