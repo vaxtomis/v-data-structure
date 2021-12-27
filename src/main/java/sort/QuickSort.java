@@ -10,14 +10,14 @@ public class QuickSort implements Sort {
     @Override
     public void sort(Comparable[] array) {
         long startTime = System.currentTimeMillis();
-        __quickSort(array, 0, array.length - 1);
+        quickSort(array, 0, array.length - 1);
         long endTime = System.currentTimeMillis();
         System.out.println(Arrays.toString(array));
         System.out.println("快排用时： " + (startTime - endTime) + " ms");
 
     }
 
-    private void __quickSort(Comparable[] array, int l, int r) {
+    private void quickSort(Comparable[] array, int l, int r) {
         int i = l, j = r;
         if (i >= j) return;
         while (i < j) {
@@ -26,8 +26,8 @@ public class QuickSort implements Sort {
             swap(array, i, j);
         }
         swap(array, l, i);
-        __quickSort(array, l, i-1);
-        __quickSort(array, i+1, r);
+        quickSort(array, l, i-1);
+        quickSort(array, i+1, r);
     }
 
     private void swap(Comparable[] array, int i, int j) {
