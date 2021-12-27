@@ -17,8 +17,8 @@ public class BPlusTree<V extends Comparable<V>, T> {
     // 阶数
     private Integer degree;
 
-    // 用于初始化数组长度（在节点拥有 order 个元素后插入，在拆分前要留出容纳插入元素的空间）
-    // 所以为 order + 1
+    // 用于初始化数组长度（在节点拥有 degree 个元素后插入，在拆分前要留出容纳插入元素的空间）
+    // 所以为 degree + 1
     private Integer maxNumber;
 
     private Node<V, T> root;
