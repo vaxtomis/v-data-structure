@@ -110,7 +110,9 @@ public class SkipList<T> {
         System.out.println("前节点键为 {" + base.key + "}");
         int randomLevel = randomLevel();
         SkipListNode insertNode = new SkipListNode(key, value, base, randomLevel);
-        insertNode.backward = base;
+        if (base != header) {
+            insertNode.backward = base;
+        }
         SkipListNode nextNode = base.levels[0].forward;
         if (nextNode != null) {
             nextNode.backward = insertNode;
