@@ -13,7 +13,7 @@ public class QuickSort implements Sort {
         quickSort(array, 0, array.length - 1);
         long endTime = System.currentTimeMillis();
         System.out.println(Arrays.toString(array));
-        System.out.println("快排用时： " + (startTime - endTime) + " ms");
+        System.out.println("快排用时： " + (endTime - startTime) + " ms");
 
     }
 
