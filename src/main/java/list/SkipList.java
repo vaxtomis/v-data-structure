@@ -105,15 +105,18 @@ public class SkipList<T> {
 
     public void insert(String key, T value) {
         System.out.println("=== 开始插入键为 " + key + " 的节点 ===");
+
         SkipListNode base = header.findPos(key);
         System.out.println("前节点键为 {" + base.key + "}");
         int randomLevel = randomLevel();
         SkipListNode insertNode = new SkipListNode(key, value, base, randomLevel);
+        insertNode.backward = base;
         SkipListNode nextNode = base.levels[0].forward;
         if (nextNode != null) {
             nextNode.backward = insertNode;
             System.out.println("后节点键为 {" + nextNode.key + "}");
         } else {
+            System.out.println("当前插入节点成为尾节点");
             tail = insertNode;
         }
         for (int i = 0; i < base.levels.length; i++) {
