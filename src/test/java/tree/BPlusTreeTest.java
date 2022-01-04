@@ -11,10 +11,10 @@ import java.util.Random;
 public class BPlusTreeTest {
     @Test
     public void test() {
-        BPlusTree<Integer, String> tree = new BPlusTree<>(10);
+        BPlusTree<Integer, String> tree = new BPlusTree<>(4);
         Random random = new Random();
-        for (int i = 0; i < 100; i++) {
-            int randomNum = random.nextInt(1000);
+        for (int i = 0; i < 100000; i++) {
+            int randomNum = random.nextInt(1000000);
             tree.insert(randomNum, String.valueOf(randomNum));
         }
         tree.printTree();

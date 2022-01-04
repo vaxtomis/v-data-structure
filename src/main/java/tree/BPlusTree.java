@@ -1,5 +1,7 @@
 package tree;
 
+import java.util.Arrays;
+
 /**
  * 每个节点最多可以有 m 个元素
  * 除了根节点外，每个节点最少有 (m/2) 个元素
@@ -118,7 +120,6 @@ public class BPlusTree<V extends Comparable<V>, T> {
             cur.print();
             System.out.println();
         }
-
     }
 
     class LeafNode<V extends Comparable<V>, T> extends Node<V, T> {
@@ -185,15 +186,20 @@ public class BPlusTree<V extends Comparable<V>, T> {
             keys[index] = key;
             values[index] = value;
             keyNumber++;
-            // 没有溢出，无需拆分,但是最大值变化
-            if (keyNumber <= degree) {
-                if (index == keyNumber - 1) {
-                    Node node = this;
-                    while (node.parent != null) {
-                        node.parent.keys[node.parent.keyNumber - 1] = key;
-                        node = node.parent;
-                    }
+
+            // 叶节点插入最大值时需要更新每个末尾节点的最大值（无论是否分裂）
+            // 这里比较 keyNumber - 1，因为只有大于所有叶子节点中的 key 才能插到这个位置
+            if (index == keyNumber - 1) {
+                Node node = this;
+                while (node.parent != null) {
+                    node.parent.keys[node.parent.keyNumber - 1] = key;
+                    node = node.parent;
                 }
+                tempKey = key;
+            }
+
+            // 没有溢出，无需拆分
+            if (keyNumber <= degree) {
 
                 System.out.print("叶节点插入：");
                 this.print();
@@ -224,6 +230,7 @@ public class BPlusTree<V extends Comparable<V>, T> {
             this.print();
             newLeaf.print();
             System.out.println();
+            // System.out.println(tempKey);
 
             return parent.insertParent(this, newLeaf, tempKey);
         }
@@ -267,8 +274,13 @@ public class BPlusTree<V extends Comparable<V>, T> {
             for (int i = 0; i < keyNumber; i++) {
                 if (key.compareTo((V)keys[i]) == 0) {
                     keyIndex = i;
+                    break;
                 }
             }
+            if (keyIndex == -1) {
+                throw new RuntimeException("Cannot find keyIndex.");
+            }
+
             System.arraycopy(keys, keyIndex, keys, keyIndex + 1, keyNumber - keyIndex);
             keys[keyIndex] = node1.keys[node1.keyNumber - 1];
             keys[keyIndex + 1] = node2.keys[node2.keyNumber - 1];
@@ -305,7 +317,6 @@ public class BPlusTree<V extends Comparable<V>, T> {
             }
             root = (BPlusNode)freshRoot;
 
-            //
             newBPlusNode.next = this.next;
             this.next = newBPlusNode;
 
@@ -314,7 +325,7 @@ public class BPlusTree<V extends Comparable<V>, T> {
             System.out.print("非叶节点插入：");
             print();
             System.out.println();
-
+            // System.out.println(tempKey);
             return parent.insertParent(this, newBPlusNode, tempKey);
         }
 
