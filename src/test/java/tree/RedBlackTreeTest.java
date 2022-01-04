@@ -11,7 +11,7 @@ import java.util.Random;
  */
 public class RedBlackTreeTest {
     @Test
-    public void main() {
+    public void test() {
         RedBlackTree<Integer, String> tree = new RedBlackTree<>();
         LinkedList<Integer> list = new LinkedList<>();
         Random random = new Random();
