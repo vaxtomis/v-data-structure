@@ -12,7 +12,7 @@ import java.util.Random;
 public class CompareTest {
     @Test
     public void test() {
-        ArrayList<String> list = create(100000);
+        ArrayList<String> list = create(10000);
         ArrayList<Long> time = new ArrayList<>();
         testBPT(list, time);
         testRBT(list, time);
