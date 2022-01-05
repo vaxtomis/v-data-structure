@@ -12,7 +12,7 @@ import java.util.Random;
  * levels[], backward, score(这里替换为 key), obj(这里替换为 value)
  *
  * SkipListLevel 结构
- * forward, span(去掉了)
+ * forward, span
  *
  * @author vaxtomis
  * @date 2021-12-27
@@ -25,7 +25,7 @@ public class SkipList<T> {
     private static final Integer MAX_LEVEL = 32;
 
     public SkipList() {
-        header = new SkipListNode<>(null, null, null, MAX_LEVEL);
+        header = new SkipListNode<>(null, null, MAX_LEVEL);
         tail = null;
         level = 1;
         length = 0;
@@ -38,10 +38,10 @@ public class SkipList<T> {
         protected String key;
         protected T value;
 
-        public SkipListNode(String key, T value, SkipListNode<T> backward, int levelNum) {
+        public SkipListNode(String key, T value, int levelNum) {
             this.key = key;
             this.value = value;
-            this.backward = backward;
+            this.backward = null;
             // 每个跳跃表节点的层高都是 1 至 32 之间的随机数
             System.out.println("创建新 SkipListNode，层高为：" + levelNum + "，键{" + key + "}");
             this.levels = new SkipListLevel[levelNum];
@@ -50,33 +50,39 @@ public class SkipList<T> {
             }
         }
 
-        // find 和 findPos 是否可以考虑复用呢？
-        private T find(String key) {
-            int maxLevel = Math.min(level, levels.length) - 1;
-            for (;maxLevel >= 0; maxLevel--) {
+        // 查询操作
+        private T find(String key, Integer curLevel) {
+            for (;curLevel >= 0; curLevel--) {
                 // 跳过指向 null 的 level.forward
-                if (levels[maxLevel].forward == null) {
+                if (levels[curLevel].forward == null) {
                     continue;
                 }
-                if (levels[maxLevel].forward.key.equals(key)) {
-                    return levels[maxLevel].forward.value;
+                if (key.compareTo(levels[curLevel].forward.key) == 0) {
+                    return levels[curLevel].forward.value;
                 }
-                if (key.compareTo(levels[maxLevel].forward.key) > 0) {
-                    return levels[maxLevel].forward.find(key);
+                if (key.compareTo(levels[curLevel].forward.key) > 0) {
+                    return levels[curLevel].forward.find(key, curLevel);
                 }
             }
             return null;
         }
 
-        private SkipListNode findPos(String key) {
-            int maxLevel = Math.min(level, levels.length) - 1;
-            for (;maxLevel >= 0; maxLevel--) {
+        private SkipListNode<T> findPos(String key, Integer curLevel, Integer random, SkipListNode insertNode) {
+            for (;curLevel >= 0; curLevel--) {
                 // 跳过指向 null 的 level.forward
-                if (levels[maxLevel].forward == null) {
+                if (levels[curLevel].forward == null) {
+                    if (curLevel < random && curLevel > 0) {
+                        insertNode.levels[curLevel].forward = levels[curLevel].forward;
+                        levels[curLevel].forward = insertNode;
+                    }
                     continue;
                 }
-                if (key.compareTo(levels[maxLevel].forward.key) > 0) {
-                    return levels[maxLevel].forward.findPos(key);
+                if (key.compareTo(levels[curLevel].forward.key) > 0) {
+                    return levels[curLevel].forward.findPos(key, curLevel, random, insertNode);
+                }
+                if (curLevel < random && curLevel > 0) {
+                    insertNode.levels[curLevel].forward = levels[curLevel].forward;
+                    levels[curLevel].forward = insertNode;
                 }
             }
             return this;
@@ -100,20 +106,31 @@ public class SkipList<T> {
     }
 
     public T find(String key) {
-        return header.find(key);
+        return header.find(key, header.levels.length - 1);
     }
 
     public void insert(String key, T value) {
         System.out.println("=== 开始插入键为 " + key + " 的节点 ===");
 
-        SkipListNode base = header.findPos(key);
+        // 先计算出节点的随机层高，创建新节点
+        int random = randomLevel();
+        SkipListNode insertNode = new SkipListNode(key, value, random);
+        SkipListNode base = header.findPos(key, header.levels.length - 1, random, insertNode);
         System.out.println("前节点键为 {" + base.key + "}");
-        int randomLevel = randomLevel();
-        SkipListNode insertNode = new SkipListNode(key, value, base, randomLevel);
+
+        // 赋值是否是当前最大 level
+        if (insertNode.levels.length > level) {
+            level = insertNode.levels.length;
+        }
+
+        // 前一个节点不为头结点
         if (base != header) {
             insertNode.backward = base;
         }
+
+        // 找到下一个节点
         SkipListNode nextNode = base.levels[0].forward;
+
         if (nextNode != null) {
             nextNode.backward = insertNode;
             System.out.println("后节点键为 {" + nextNode.key + "}");
@@ -121,12 +138,10 @@ public class SkipList<T> {
             System.out.println("当前插入节点成为尾节点");
             tail = insertNode;
         }
-        for (int i = 0; i < base.levels.length; i++) {
-            if (i < randomLevel) {
-                insertNode.levels[i].forward = base.levels[i].forward;
-                base.levels[i].forward = insertNode;
-            }
-        }
+        insertNode.levels[0].forward = nextNode;
+        base.levels[0].forward = insertNode;
+
+        length++;
         System.out.println("=== 节点 " + key + " 插入结束 ===");
         System.out.println();
     }
