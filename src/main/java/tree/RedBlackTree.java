@@ -109,8 +109,8 @@ public class RedBlackTree<V extends Comparable<V>, T> {
             root.isRed = false;
             root.parent = null;
 
+            // 黑色节点的左右子节点都为红，调整颜色（情况4）
             if (left != null && right != null && !isRed && left.isRed && right.isRed) {
-                // 黑色节点的左右子节点都为红，调整颜色（情况4）
                 System.out.println("情况4：黑色节点的左右子节点都为红，颜色翻转。");
                 isRed = true;
                 left.isRed = false;
@@ -136,8 +136,8 @@ public class RedBlackTree<V extends Comparable<V>, T> {
                 parent.balance();
                 return;
             }
+            // 直接插在节点右侧，左旋（情况1）
             if (right != null && !isRed && right.isRed) {
-                // 直接插在节点右侧，左旋（情况1）
                 System.out.println("情况1：直接插在节点右侧，左旋。");
                 this.right.isRed = false;
                 this.isRed = true;
