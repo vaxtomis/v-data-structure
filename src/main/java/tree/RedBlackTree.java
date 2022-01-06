@@ -147,7 +147,6 @@ public class RedBlackTree<V extends Comparable<V>, T> {
 
         // 判断当前节点是否是其父节点的左子节点
         private boolean isLeft() {
-            Node<V, T> parent = this.parent;
             if (parent == null || this == parent.left) {
                 return true;
             }
@@ -157,28 +156,25 @@ public class RedBlackTree<V extends Comparable<V>, T> {
         // 给定 key 找对应的 value（平衡树的查找逻辑很简单）
         private T find(V key) {
             int cmp = key.compareTo(this.key);
-            if (cmp > 0) {
-                if (this.right != null) {
-                    return (T) this.right.find(key);
-                }
-                return null;
+            if (cmp == 0) {
+                return (T) value;
             }
-            if (cmp < 0) {
-                if (this.left != null) {
-                    return (T) this.left.find(key);
-                }
-                return null;
+            if (cmp > 0 && right != null) {
+                return (T) right.find(key);
             }
-            return (T) this.value;
+            if (cmp < 0 && left != null) {
+                return (T) left.find(key);
+            }
+            return null;
         }
 
         // 给定 key，返回有合适插入位置的父节点
         private Node<V, T> findNode(V key) {
-            if (key.compareTo(this.key) > 0 && this.right != null) {
-                return this.right.findNode(key);
+            if (key.compareTo(this.key) > 0 && right != null) {
+                return right.findNode(key);
             }
-            if (key.compareTo(this.key) < 0 && this.left != null) {
-                return this.left.findNode(key);
+            if (key.compareTo(this.key) < 0 && left != null) {
+                return left.findNode(key);
             }
             return this;
         }
@@ -189,8 +185,8 @@ public class RedBlackTree<V extends Comparable<V>, T> {
             System.out.println("插入根节点：" + key.toString());
             Node<V, T> newNode = new Node<>(key, value);
             newNode.isRed = false;
-            this.root = newNode;
-            return this.root;
+            root = newNode;
+            return root;
         }
         Node<V, T> insertP = root.findNode(key);
         int cmp = key.compareTo(insertP.key);
