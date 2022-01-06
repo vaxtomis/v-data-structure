@@ -9,7 +9,7 @@ import java.util.Arrays;
  * 所有的叶节点都在同一层
  * 相邻的叶节点之间用指针相连
  * 某个元素对应子树中的元素都比它小，右侧元素子树都大于或等于它
- * 非叶子节点只存放关键字和指向下一个孩子节点的索引，记录只存放在叶子节点中
+ * 非叶子节点只存放关键字和指向下一个孩子节点的索引，记录只存放在叶节点中
  *
  * @author vaxtomis
  * @date 2021-12-20
@@ -334,15 +334,13 @@ public class BPlusTree<V extends Comparable<V>, T> {
          * @return
          */
         int findIndex(V key) {
-            int index = 0;
-            for (int i = 0; i < this.keyNumber - 1; i++) {
+            for (int i = 0; i < keyNumber; i++) {
                 if (key.compareTo((V)keys[i]) > 0) {
-                    index++;
-                } else {
-                    break;
+                    continue;
                 }
+                return i;
             }
-            return index;
+            return keyNumber - 1;
         }
 
         @Override
