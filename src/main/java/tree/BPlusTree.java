@@ -1,7 +1,5 @@
 package tree;
 
-import java.util.Arrays;
-
 /**
  * 每个节点最多可以有 m 个元素
  * 除根节点，每个节点最少有 (m/2) 个元素
@@ -74,7 +72,7 @@ public class BPlusTree<V extends Comparable<V>, T> {
         protected Integer keyNumber;
         protected Object[] keys;
 
-        // 一般只要求叶节点相连，为了更方便的打印整颗 B+树，这里选择每一层都连接起来
+        // 一般只要求叶节点相连，为了更方便的打印整棵 B+树，这里选择每一层都连接起来
         protected Node next;
 
         public Node() {
@@ -204,7 +202,7 @@ public class BPlusTree<V extends Comparable<V>, T> {
                 this.print();
                 System.out.println();
 
-                return null;
+                return this;
             }
             // 需要拆分
             int mid = this.keyNumber / 2;
