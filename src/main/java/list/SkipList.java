@@ -22,7 +22,7 @@ public class SkipList<T> {
     private SkipListNode<T> tail;
     private Integer level;
     private Integer length;
-    private static final Integer MAX_LEVEL = 32;
+    private static final Integer MAX_LEVEL = 16;
 
     public SkipList() {
         header = new SkipListNode<>(null, null, MAX_LEVEL);
@@ -106,7 +106,7 @@ public class SkipList<T> {
     }
 
     public T find(String key) {
-        return header.find(key, header.levels.length - 1);
+        return header.find(key, level - 1);
     }
 
     public void insert(String key, T value) {
